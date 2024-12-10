@@ -9,7 +9,7 @@ function parseInput() {
 let finalstring = "";
 //-----------
 
-console.log(optimizeDrive());
+console.log(shorter());
 
 //-----------
 
@@ -73,4 +73,21 @@ function optimizeDrive(drive = parseInput()) {
 function sum(from, size) {
   let to = from + size - 1;
   return ((from + to) * (to - from + 1)) / 2;
+}
+
+function shorter(disk = parseInput()) {
+  disk = disk.flatMap((x, i) =>
+    i % 2 ? new Array(x).fill(-1) : new Array(x).fill(i / 2)
+  );
+  let left = 0;
+  let right = disk.length - 1;
+
+  while (true) {
+    while (disk[left] >= 0) left++;
+    while (disk[right] < 0) right--;
+    if (left >= right) break;
+    disk[left] = disk[right];
+    disk[right] = -1;
+  }
+  return disk.reduce((acc, el, i) => acc + (el > 0 ? el * i : 0), 0);
 }

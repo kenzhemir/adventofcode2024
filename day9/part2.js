@@ -15,6 +15,7 @@ console.log(optimizeDrive());
 function optimizeDrive(drive = parseInput()) {
   let checksum = 0;
   let offsets = new Array(drive.length).fill(0);
+  let disk = [];
   for (let i = Math.floor(drive.length / 2) * 2; i >= 0; i -= 2) {
     let id = i / 2;
     let file_size = drive[i];
@@ -24,6 +25,8 @@ function optimizeDrive(drive = parseInput()) {
       pos += drive[j - 1];
       let gap = drive[j] - offsets[j];
       if (file_size <= gap) {
+        disk.splice(pos+ offsets[j], 0, ...new Array(file_size).fill(id));
+
         file_checksum = id * sum(pos + offsets[j], file_size);
         offsets[j] += file_size;
         break;
@@ -32,11 +35,13 @@ function optimizeDrive(drive = parseInput()) {
     }
 
     if (!file_checksum) {
+      disk.splice(pos, 0, ...new Array(file_size).fill(id));
       file_checksum = id * sum(pos, file_size);
     }
     checksum += file_checksum;
   }
 
+  console.log(disk.join("|"));
   return checksum;
 }
 
